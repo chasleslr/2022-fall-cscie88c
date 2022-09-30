@@ -12,15 +12,25 @@ final case class Student(
 
 object Student {
 
-  def validateEmail(student: Student): Boolean = ???
+  def validateEmail(student: Student): Boolean =
+    student.email contains "@"
 
   def averageScoreBySubject(
       subject: String,
       studentList: List[Student]
-    ): Double = ???
+    ): Double = {
+    val scores =
+      studentList.filter(student => student.subject == subject).map(_.score)
+    if (scores.isEmpty) { 0 }
+    else { scores.sum / scores.length }
+  }
 
   def averageScoreByStudent(
       student: Student,
       studentList: List[Student]
-    ): Double = ???
+    ): Double = {
+    val scores = studentList.filter(s => s.name == student.name).map(_.score)
+    if (scores.isEmpty) { 0.0 }
+    else { scores.sum / scores.length }
+  }
 }

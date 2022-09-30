@@ -16,7 +16,7 @@ lazy val root = (project in file(".")).
       "-language:higherKinds", // HKT required for Monads and other HKT types
       "-Wunused", // for scalafix
     ),
-    libraryDependencies ++= Dependencies.core ++ Dependencies.scalaTest,
+    libraryDependencies ++= Dependencies.core ++ Dependencies.scalaTest ++ Seq("com.twitter" %% "algebird-core" % "0.13.9"),
     assembly / mainClass := Some("org.cscie88c.MainApp"),
     assembly / assemblyJarName := "2022FallScalaIntro.jar",
     assembly / test := {},
