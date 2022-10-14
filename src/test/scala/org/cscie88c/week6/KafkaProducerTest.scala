@@ -5,7 +5,7 @@ import org.cscie88c.testutils.{ StandardTest }
 class KafkaProducerTest extends StandardTest {
   "KafkaClient" should {
     "send a message to the default topic" in {
-      // add your unit tests for KafkaClient.send here
+    KafkaClient.sendStatusEvent("starting") shouldBe "Sending message 'starting' to topic 'default-topic'"
     }
   }
 }
