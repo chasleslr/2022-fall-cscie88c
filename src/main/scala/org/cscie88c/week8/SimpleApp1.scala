@@ -12,8 +12,19 @@ object SimpleApp1 extends LazyLogging {
       LazyList.from(Source.fromResource(fileName).getLines())
     }.toOption
   
-  def monthLines(month: String)(lines: LazyList[String]): LazyList[String] = ???
-      
-  def main(args: Array[String]): Unit = ???
+  def monthLines(month: String)(lines: LazyList[String]): LazyList[String] = {
+    lines.filter(_.contains(month))
+  }
+
+  def main(args: Array[String]): Unit = {
+    val month = args(0)
+    val file = args(1)
+    val lines = lineStreamFromFile(file)
+
+    lines match {
+      case Some(l) => println(s"Transactions in ${month}: ${monthLines(month)(l).size}")
+      case None => println(s"No Transactions found for ${month}")
+    }
+  }
 
 }
