@@ -8,10 +8,12 @@ import org.apache.spark.rdd.{RDD}
 import pureconfig.generic.auto._
 
 // write case class below
-// case class SparkRDDConfig()
+ case class SparkRDDConfig(name: String, masterUrl: String, transactionFile: String)
 
 // run with: sbt "runMain org.cscie88c.week9.SparkRDDApplication"
 object SparkRDDApplication {
+
+  val SPARK_RDD_APPLICATION_PATH = "org.cscie88c.spark-rdd-application"
 
   // application entry point
   def main(args: Array[String]): Unit = {
@@ -24,13 +26,30 @@ object SparkRDDApplication {
     spark.stop()                                                            // 7. stop spark cluster
   }
 
-  def readConfig(): SparkRDDConfig = ???
+  def readConfig(): SparkRDDConfig = {
+    ConfigUtils.loadAppConfig[SparkRDDConfig](SPARK_RDD_APPLICATION_PATH)
+  }
 
-  def loadData(spark: SparkSession)(implicit conf: SparkRDDConfig): RDD[String] = ???
+  def loadData(spark: SparkSession)(implicit conf: SparkRDDConfig): RDD[String] = {
+    spark
+      .sparkContext
+      .textFile(conf.transactionFile)
+  }
 
-  def lineToTransactions(lines: RDD[String]): RDD[CustomerTransaction] = ???
+  def lineToTransactions(lines: RDD[String]): RDD[CustomerTransaction] = {
+    lines
+      .map(CustomerTransaction(_))
+      .collect({ case Some(x) => x })
+  }
 
-  def transactionsAmountsByYear(transactions: RDD[CustomerTransaction]): RDD[(String, Double)] = ???
+  def transactionsAmountsByYear(transactions: RDD[CustomerTransaction]): RDD[(String, Double)] = {
+    transactions
+      .map(f => (f.transactionYear, 1.0))
+      .reduceByKey((a, b) => a + b)
+  }
 
-  def printTransactionsAmountsByYear(transactions: RDD[(String, Double)]): Unit = ???
+  def printTransactionsAmountsByYear(transactions: RDD[(String, Double)]): Unit = {
+    transactions
+      .foreach(println)
+  }
 }
